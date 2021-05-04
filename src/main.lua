@@ -68,6 +68,6 @@ function playerMovement(dt)
         move_dir_y = move_dir_y / dist
     end
 
-    player.x = player.x + (player.speed * dt)* move_dir_x
-    player.y = player.y + (player.speed * dt)* move_dir_y
+    player.x = player.x + ((player.speed * dt)* move_dir_x)
+    player.y = player.y + ((player.speed * dt)* move_dir_y)
 end
