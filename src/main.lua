@@ -41,7 +41,15 @@ function love.draw()
 
     --iterate throughout zombie tables
     for i,z in ipairs(zombie_group) do
-        love.graphics.draw(sprites.zombie,z.x,z.y)
+        love.graphics.draw(sprites.zombie,
+            z.x,
+            z.y,
+            pointToPlayer(z),
+            nil,
+            nil,
+            sprites.zombie:getWidth()/2,
+            sprites.zombie:getHeight()/2
+        )
     end
 
     --player sprite
@@ -99,6 +107,13 @@ end
 function pointToMouse()
     return math.atan2(player.y - love.mouse.getY(), player.x - love.mouse.getX()) + math.pi
 end
+
+
+function pointToPlayer(enemy) -- calculate angle from zombie to player
+    return math.atan2(player.y - enemy.y, player.x - enemy.x)
+end
+
+
 
 function spawnZombie()
     local zombie = {}
