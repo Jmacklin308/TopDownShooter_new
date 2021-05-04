@@ -22,7 +22,8 @@ function love.load()
     player.height = sprites.player:getHeight()
 
 
-    tempRotation = 0
+    --Zombie properties
+    zombie_group = {}
 
 end
 
@@ -35,11 +36,19 @@ function love.update(dt)
     end
 
 function love.draw()
-    --draw background
+    --background
     love.graphics.draw(sprites.background,0,0)
-    --draw player sprite
-    love.graphics.draw(sprites.player, player.x, player.y, aimToMouse ,
-            nil,nil,player.width/2,player.height/2)
+
+    --iterate throughout zombie tables
+    for i,z in ipairs(zombie_group) do
+        love.graphics.draw(sprites.zombie,z.x,z.y)
+    end
+
+    --player sprite
+    love.graphics.draw(sprites.player, player.x, player.y, aimToMouse , nil,nil,player.width/2,player.height/2)
+
+
+
 
 end
 --Updates player movement
@@ -79,6 +88,22 @@ function playerMovement(dt)
     player.y = player.y + ((player.speed * dt)* move_dir_y)
 end
 
+---DEBUG
+function love.keypressed(key)
+    if key == "space" then
+        spawnZombie()
+    end
+end
+
+
 function pointToMouse()
     return math.atan2(player.y - love.mouse.getY(), player.x - love.mouse.getX()) + math.pi
+end
+
+function spawnZombie()
+    local zombie = {}
+    zombie.x = math.random(0,love.graphics.getWidth())
+    zombie.y = math.random(0,love.graphics.getHeight())
+    zombie.speed = 100
+    table.insert(zombie_group,zombie) --take zombie table and add it to the zombie group table
 end
