@@ -30,9 +30,10 @@ end
 function love.update(dt)
 
     playerMovement(dt) -- Player movement
+    zombieMovement(dt)
 
 
-    aimToMouse = pointToMouse()
+    aimToMouse = playerMouseAngle()
     end
 
 function love.draw()
@@ -44,7 +45,7 @@ function love.draw()
         love.graphics.draw(sprites.zombie,
             z.x,
             z.y,
-            pointToPlayer(z),
+            zombiePlayerAngle(z),
             nil,
             nil,
             sprites.zombie:getWidth()/2,
@@ -59,7 +60,7 @@ function love.draw()
 
 
 end
---Updates player movement
+
 function playerMovement(dt)
     --no movement at start
     move_dir_x = 0
@@ -96,6 +97,15 @@ function playerMovement(dt)
     player.y = player.y + ((player.speed * dt)* move_dir_y)
 end
 
+function zombieMovement(dt)
+    for i,z in ipairs(zombie_group) do
+        --use cos(zombie direction) to get x
+        z.x = z.x + (math.cos(zombiePlayerAngle(z)) * z.speed * dt)
+        --use sin(zombie direction) to get y
+        z.y = z.y + (math.sin(zombiePlayerAngle(z)) * z.speed * dt)
+    end
+end
+
 ---DEBUG
 function love.keypressed(key)
     if key == "space" then
@@ -104,21 +114,20 @@ function love.keypressed(key)
 end
 
 
-function pointToMouse()
+function playerMouseAngle()
     return math.atan2(player.y - love.mouse.getY(), player.x - love.mouse.getX()) + math.pi
 end
 
 
-function pointToPlayer(enemy) -- calculate angle from zombie to player
+function zombiePlayerAngle(enemy) -- calculate angle from zombie to player
     return math.atan2(player.y - enemy.y, player.x - enemy.x)
 end
-
 
 
 function spawnZombie()
     local zombie = {}
     zombie.x = math.random(0,love.graphics.getWidth())
     zombie.y = math.random(0,love.graphics.getHeight())
-    zombie.speed = 100
+    zombie.speed = 140
     table.insert(zombie_group,zombie) --take zombie table and add it to the zombie group table
 end
