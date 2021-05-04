@@ -12,12 +12,17 @@ function love.load()
     sprites.bullet = love.graphics.newImage('res/bullet.png')
 
 
-    --create player table to assign properties
+    --Player properties
     player = {}
     player.x = game_width/2
     player.y = game_height/2
     player.health = 100
     player.speed = 200
+    player.width = sprites.player:getWidth()
+    player.height = sprites.player:getHeight()
+
+
+    tempRotation = 0
 
 end
 
@@ -25,18 +30,20 @@ function love.update(dt)
 
     playerMovement(dt) -- Player movement
 
-end
+
+    aimToMouse = pointToMouse()
+    end
 
 function love.draw()
     --draw background
     love.graphics.draw(sprites.background,0,0)
     --draw player sprite
-    love.graphics.draw(sprites.player, player.x, player.y)
+    love.graphics.draw(sprites.player, player.x, player.y, aimToMouse ,
+            nil,nil,player.width/2,player.height/2)
 
 end
-
+--Updates player movement
 function playerMovement(dt)
-
     --no movement at start
     move_dir_x = 0
     move_dir_y = 0
@@ -60,7 +67,6 @@ function playerMovement(dt)
 
     diagCheck = (move_dir_x*move_dir_x)+(move_dir_y*move_dir_y)
 
-    --Taking care of that pathagoriean therum
     if (diagCheck>1) then
         --movement is no longer 1 unit, so we need to normalize unit
         dist = math.sqrt(diagCheck)
@@ -71,4 +77,8 @@ function playerMovement(dt)
 
     player.x = player.x + ((player.speed * dt)* move_dir_x)
     player.y = player.y + ((player.speed * dt)* move_dir_y)
+end
+
+function pointToMouse()
+    return math.atan2(player.y - love.mouse.getY(), player.x - love.mouse.getX()) + math.pi
 end
