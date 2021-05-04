@@ -29,7 +29,7 @@ end
 
 function love.update(dt)
 
-    playerMovement(dt) -- Player movement
+    playerMovement(dt)
     zombieMovement(dt)
 
 
@@ -103,6 +103,14 @@ function zombieMovement(dt)
         z.x = z.x + (math.cos(zombiePlayerAngle(z)) * z.speed * dt)
         --use sin(zombie direction) to get y
         z.y = z.y + (math.sin(zombiePlayerAngle(z)) * z.speed * dt)
+
+
+        -- check collision with player
+        if distanceToTarget(z.x, z.y, player.x, player.y) < player.width then
+            for i,z in ipairs(zombie_group) do
+                zombie_group[i] = nil --remove zombie
+            end
+        end
     end
 end
 
@@ -113,16 +121,13 @@ function love.keypressed(key)
     end
 end
 
-
 function playerMouseAngle()
     return math.atan2(player.y - love.mouse.getY(), player.x - love.mouse.getX()) + math.pi
 end
 
-
 function zombiePlayerAngle(enemy) -- calculate angle from zombie to player
     return math.atan2(player.y - enemy.y, player.x - enemy.x)
 end
-
 
 function spawnZombie()
     local zombie = {}
@@ -130,4 +135,8 @@ function spawnZombie()
     zombie.y = math.random(0,love.graphics.getHeight())
     zombie.speed = 140
     table.insert(zombie_group,zombie) --take zombie table and add it to the zombie group table
+end
+
+function distanceToTarget(x1,y1,x2,y2)
+    return math.sqrt((x2-x1)^2+(y2-y1)^2)
 end
