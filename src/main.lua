@@ -61,7 +61,7 @@ function love.draw()
 
     --process the bullets on screen
     for i,b in ipairs(bullets) do
-        love.graphics.draw(sprites.bullet,b.x,b.y,nil,nil,nil,sprites.bullet:getWidth()/2,sprites.bullet:getHeight()/2)
+        love.graphics.draw(sprites.bullet,b.x,b.y,nil,.5,.5,sprites.bullet:getWidth()/2,sprites.bullet:getHeight()/2)
     end
 
     --player sprite
@@ -176,5 +176,13 @@ function bulletMovement(dt)
         b.y = b.y + (math.sin(b.direction) * b.speed * dt)
 
     end
+
+    for i=#bullets, 1, -1 do -- itterate through bullets list in reverse to clear out old objects
+        local b = bullet[i]
+        if b.x < 0 or b.y < 0 or b.x > love.graphics.getWidth() or b.y > love.graphics.getHeight() then
+            table.remove(bullets, i) -- remove the last item in the table
+        end
+    end
+
 
 end
