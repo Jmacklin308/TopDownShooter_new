@@ -25,12 +25,18 @@ function love.load()
     --Zombie properties
     zombie_group = {}
 
+
+    --Bullet objects
+    bullets = {}
+
+
 end
 
 function love.update(dt)
 
     playerMovement(dt)
     zombieMovement(dt)
+    bulletMovement(dt)
 
 
     aimToMouse = playerMouseAngle()
@@ -51,6 +57,11 @@ function love.draw()
             sprites.zombie:getWidth()/2,
             sprites.zombie:getHeight()/2
         )
+    end
+
+    --process the bullets on screen
+    for i,b in ipairs(bullets) do
+        love.graphics.draw(sprites.bullet,b.x,b.y,nil,nil,nil,sprites.bullet:getWidth()/2,sprites.bullet:getHeight()/2)
     end
 
     --player sprite
@@ -139,4 +150,31 @@ end
 
 function distanceToTarget(x1,y1,x2,y2)
     return math.sqrt((x2-x1)^2+(y2-y1)^2)
+end
+
+function spawnBullet()
+    local bullet = {} -- NOT bullets list
+    bullet.x = player.x
+    bullet.y = player.y
+    bullet.speed = 500
+    bullet.direction = playerMouseAngle()
+    table.insert(bullets, bullet) -- add bullet to bullets table
+
+end
+
+function love.mousepressed(x,y,button)
+    if button == 1 then -- left mb
+        spawnBullet()
+    end
+end
+
+function bulletMovement(dt)
+    for i,b in ipairs(bullets) do
+        --use cos(zombie direction) to get x
+        b.x = b.x + (math.cos(b.direction) * b.speed * dt)
+        --use sin(zombie direction) to get y
+        b.y = b.y + (math.sin(b.direction) * b.speed * dt)
+
+    end
+
 end
